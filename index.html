@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roller</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <select id="language-select">
+    <option value="en">English</option>
+    <option value="es">Español</option>
+    <option value="fr">Français</option>
+    <option value="de">Deutsch</option>
+    <option value="it">Italiano</option>
+  </select>
+  <button class="toggle-dark-mode" id="dark-mode-toggle">Dark Mode</button>
+  <div class="container">
+    <h1 id="title">Dice</h1>
+
+    <div class="dice-selector">
+      <label class="dice-label">
+        <input type="radio" name="dice" value="6" id="dice6" checked>
+        <div class="dice-shape d6">6</div>
+      </label>
+      <label class="dice-label">
+        <input type="radio" name="dice" value="8" id="dice8">
+        <div class="dice-shape d8">8</div>
+      </label>
+      <label class="dice-label">
+        <input type="radio" name="dice" value="10" id="dice10">
+        <div class="dice-shape d10">10</div>
+      </label>
+      <label class="dice-label">
+        <input type="radio" name="dice" value="12" id="dice12">
+        <div class="dice-shape d12">12</div>
+      </label>
+      <label class="dice-label">
+        <input type="radio" name="dice" value="20" id="dice20">
+        <div class="dice-shape d20">20</div>
+      </label>
+    </div>
+
+    <div>
+      <label for="dice-count" id="number-of-dice-label">Number of Dice:</label>
+      <input id="dice-count" type="number" min="1" max="20" value="1">
+    </div>
+
+    <button id="roll-button">Roll!</button>
+
+    <div class="sum" id="sum"></div>
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    const rollButton = document.getElementById('roll-button');
+    const resultsDiv = document.getElementById('results');
+    const sumDiv = document.getElementById('sum');
+    const diceCountInput = document.getElementById('dice-count');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const languageSelect = document.getElementById('language-select');
+    const title = document.getElementById('title');
+    const numberOfDiceLabel = document.getElementById('number-of-dice-label');
+    let selectedDice = 6; // Default to d6
+
+    // Language selection functionality
+    const languages = {
+      en: {
+        title: 'Dice',
+        numberOfDiceLabel: 'Number of Dice:',
+        rollButton: 'Roll!',
+      },
+      es: {
+        title: 'Dados',
+        numberOfDiceLabel: 'Número de Dados:',
+        rollButton: '¡Lanzar!',
+      },
+      fr: {
+        title: 'Dés',
+        numberOfDiceLabel: 'Nombre de Dés:',
+        rollButton: 'Lancer!',
+      },
+      de: {
+        title: 'Würfel',
+        numberOfDiceLabel: 'Anzahl der Würfel:',
+        rollButton: 'Würfeln!',
+      },
+      it: {
+        title: 'Dadi',
+        numberOfDiceLabel: 'Numero di Dadi:',
+        rollButton: 'Lancia!',
+      },
+    };
+
+    // Dark mode toggle functionality
+    darkModeToggle.addEventListener('click', () => {
+      if (darkModeToggle.innerHTML == "Dark Mode") {
+        document.body.classList.toggle('dark-mode');
+        darkModeToggle.textContent = 'Light Mode';
+      } else {
+        document.body.classList.toggle('dark-mode');
+        darkModeToggle.textContent = 'Dark Mode';
+      }
+    });
+
+    // Dice shape selection functionality via radio buttons
+    const diceRadios = document.querySelectorAll('input[name="dice"]');
+    diceRadios.forEach(radio => {
+      radio.addEventListener('change', (event) => {
+        selectedDice = parseInt(event.target.value);
+      });
+    });
+
+    diceCountInput.addEventListener('input', () => {
+      if (diceCountInput.value > 20) {
+        diceCountInput.value = 20;
+      }
+    });
+
+    // Language change handler
+    languageSelect.addEventListener('change', (event) => {
+      const language = event.target.value;
+      const texts = languages[language];
+
+      title.textContent = texts.title;
+      numberOfDiceLabel.textContent = texts.numberOfDiceLabel;
+      rollButton.textContent = texts.rollButton;
+    });
+
+    // Roll button functionality
+    rollButton.addEventListener('click', () => {
+      const diceCount = Math.min(20, diceCountInput.value); // Max 20 dice
+
+      resultsDiv.innerHTML = ''; // Clear previous results
+      sumDiv.textContent = ''; // Clear previous sum
+
+      let sum = 0;
+
+      for (let i = 0; i < diceCount; i++) {
+        const result = Math.floor(Math.random() * selectedDice) + 1;
+        sum += result;
+        const dieDiv = document.createElement('div');
+        dieDiv.classList.add('die', `d${selectedDice}`);
+        dieDiv.textContent = result;
+        resultsDiv.appendChild(dieDiv);
+      }
+
+      sumDiv.textContent = `Result: ${sum}`;
+    });
+  </script>
+</body>
+</html>
